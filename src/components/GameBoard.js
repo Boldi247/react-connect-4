@@ -2,69 +2,48 @@ import React, { useState } from "react";
 import GameCircle from "./GameCircle";
 import "../Game.css";
 
+const NUM_OF_CIRCLES = 16;
+const NO_PLAYER = 0;
+const PLAYER_1 = 1;
+const PLAYER_2 = 2;
+
 const GameBoard = () => {
-    const [gameBoard, setGameBoard] = useState(Array(16).fill(0));
+    const [gameBoard, setGameBoard] = useState(Array(16).fill(NO_PLAYER));
+    const [currentPlayer, setCurrentplayer] = useState(PLAYER_1);
 
     console.log(gameBoard);
+
+    const initBoard = () => {
+        const circles = [];
+        for (let i = 0; i < NUM_OF_CIRCLES; i++) {
+            circles.push(renderCircle(i));
+        }
+        return circles;
+    }
 
     const circleClicked = (id) => {
         console.log("circle clicked: " + id);
 
-        gameBoard[id] = 1;
-        setGameBoard(gameBoard);
+        setGameBoard(prev => {
+            return prev.map((circle, pos) => {
+                if (pos === id) return currentPlayer;
+                return circle;
+            })
+        })
+
+        setCurrentplayer(currentPlayer === PLAYER_1 ? PLAYER_2 : PLAYER_1)
+
         console.log(gameBoard);
+        console.log(currentPlayer);
+    }
+
+    const renderCircle = (id) => {
+        return <GameCircle key={id} id={id} className={`player_${gameBoard[id]}`} onCircleClicked={circleClicked} />
     }
 
     return (
         <div className="gameBoard">
-            <GameCircle id={1} className="player_1" onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={2} className="player_2" onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={3} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={4} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={5} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={6} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={7} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={8} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={9} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={10} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={11} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={12} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={13} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={14} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={15} onCircleClicked={circleClicked}>
-
-            </GameCircle>
-            <GameCircle id={16} onCircleClicked={circleClicked}>
-
-            </GameCircle>
+            {initBoard()}
         </div>
     )
 }
